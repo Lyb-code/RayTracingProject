@@ -17,7 +17,7 @@ class camera {
             low_left_corner = origin - vec3(0, 0, focal_length) - horizontal/2 - vertical/2;
         }
 
-        ray get_ray(double u, double v) {
+        ray get_ray(double u, double v) const {
             return ray(origin, low_left_corner + u*horizontal + v*vertical - origin);
         }
 
