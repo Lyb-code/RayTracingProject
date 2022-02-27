@@ -3,6 +3,7 @@
         "cmath": "cpp",
         "iostream": "cpp",
         "memory": "cpp",
-        "iosfwd": "cpp"
+        "iosfwd": "cpp",
+        "random": "cpp"
     }
 }
