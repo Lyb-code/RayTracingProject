@@ -12,7 +12,9 @@ class camera {
             double vfov, // vfov: vertical field-of-view in degrees
             double aspect_ratio,
             double aperture,
-            double focus_dist
+            double focus_dist,
+            double _time0 = 0,
+            double _time1 = 0
         ) { 
             auto theta = degrees_to_radians(vfov);
             auto viewport_height = 2.0 * tan(theta/2);
@@ -28,6 +30,8 @@ class camera {
             low_left_corner = origin - focus_dist*w - horizontal/2 - vertical/2;
 
             lens_radius = aperture / 2;
+            time0 = _time0;
+            time1 = _time1;
         }
 
         ray get_ray(double s, double t) const {
@@ -36,7 +40,8 @@ class camera {
             
             return ray(
                 origin + offset, 
-                low_left_corner + s*horizontal + t*vertical - origin - offset
+                low_left_corner + s*horizontal + t*vertical - origin - offset, 
+                random_double(time0, time1)
             );
         }
 
@@ -47,6 +52,7 @@ class camera {
         point3 low_left_corner;
         vec3 u, v, w;
         double lens_radius;
+        double time0, time1; // shutter open/close times
 };
 
 #endif
