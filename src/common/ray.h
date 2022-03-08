@@ -18,7 +18,7 @@ class ray {
     public:
         point3 orig;
         vec3 dir;
-        double tm;
+        double tm;// The time the ray exists
 };
 
 #endif

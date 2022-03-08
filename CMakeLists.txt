@@ -25,7 +25,18 @@ set ( SOURCE_ONE_WEEKEND
     src/RTInOneWeekend/main.cc
 )
 
+set ( SOURCE_NEXT_WEEK
+    ${COMMON_ALL}
+    src/RTTheNextWeek/hittable_list.h
+    src/RTTheNextWeek/hittable.h
+    src/RTTheNextWeek/material.h
+    src/RTTheNextWeek/moving_sphere.h
+    src/RTTheNextWeek/sphere.h
+    src/RTTheNextWeek/main.cc
+)
+
 # Executables
 add_executable(RTInOneWeekend       ${SOURCE_ONE_WEEKEND})
+add_executable(RTTheNextWeek        ${SOURCE_NEXT_WEEK})
 
 include_directories(src/common)
