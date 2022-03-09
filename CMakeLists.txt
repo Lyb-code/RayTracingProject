@@ -27,11 +27,14 @@ set ( SOURCE_ONE_WEEKEND
 
 set ( SOURCE_NEXT_WEEK
     ${COMMON_ALL}
+    src/RTTheNextWeek/aabb.h
+    src/RTTheNextWeek/bvh.h
     src/RTTheNextWeek/hittable_list.h
     src/RTTheNextWeek/hittable.h
     src/RTTheNextWeek/material.h
     src/RTTheNextWeek/moving_sphere.h
     src/RTTheNextWeek/sphere.h
+    src/RTTheNextWeek/texture.h
     src/RTTheNextWeek/main.cc
 )
 
