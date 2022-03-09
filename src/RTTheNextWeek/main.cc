@@ -5,6 +5,7 @@
 #include "hittable_list.h"
 #include "camera.h"
 #include "material.h"
+#include "bvh.h"
 #include <iostream>
 
 color ray_color(const ray& r, const hittable& world, int depth) {
@@ -29,7 +30,8 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 hittable_list random_scene() {
     hittable_list world;
 
-    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    auto checker = make_shared<checker_texture>(color(0.2, 0.3, 0.1), color(0.9, 0.9, 0.9));
+    auto ground_material = make_shared<lambertian>(checker);
     world.add(make_shared<sphere>(point3(0,-1000,0), 1000, ground_material));
 
     for (int i = -11; i < 11; i++) {
@@ -71,7 +73,9 @@ hittable_list random_scene() {
     auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
-    return world;
+    hittable_list res;
+    res.add(make_shared<bvh_node>(world, 0, 1));
+    return res;
 }
 
 int main() {
