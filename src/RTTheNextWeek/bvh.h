@@ -43,6 +43,11 @@ bool bvh_node::hit(const ray& r, double t_min, double t_max, hit_record& record)
     return hit_left || hit_right;
 }
 
+inline bool box_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b, int axis);
+inline bool box_x_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b);
+inline bool box_y_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b);
+inline bool box_z_compare(const shared_ptr<hittable> a, const shared_ptr<hittable> b);
+
 bvh_node::bvh_node(
     const std::vector<shared_ptr<hittable>>& src_objects, 
     size_t start, size_t end, double time0, double time1
@@ -51,7 +56,7 @@ bvh_node::bvh_node(
     size_t span = end - start;
     int axis = random_int(0, 2);
     bool (*comparator)(const shared_ptr<hittable>, const shared_ptr<hittable>) = (axis == 0) ? box_x_compare :
-        (axis == 1) ?  box_y_compare : box_z_compare;
+        (axis == 1) ?  box_y_compare : box_z_compare; //function pointer
 
     if (span == 1) {
         left = objects[start];
