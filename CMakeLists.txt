@@ -32,6 +32,7 @@ set ( SOURCE_NEXT_WEEK
     src/RTTheNextWeek/aarect.h
     src/RTTheNextWeek/box.h
     src/RTTheNextWeek/bvh.h
+    src/RTTheNextWeek/constant_medium.h
     src/RTTheNextWeek/hittable_list.h
     src/RTTheNextWeek/hittable.h
     src/RTTheNextWeek/material.h
