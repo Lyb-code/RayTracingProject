@@ -12,7 +12,7 @@ using std::shared_ptr;
 using std::make_shared;
 
 // constants
-const double inifinity = std::numeric_limits<double>::infinity();
+const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
 
 // untility functions
