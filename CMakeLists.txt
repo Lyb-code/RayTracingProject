@@ -27,20 +27,20 @@ set ( SOURCE_ONE_WEEKEND
 
 set ( SOURCE_NEXT_WEEK
     ${COMMON_ALL}
+    src/common/aabb.h
     src/common/external/stb_image.h
-    src/RTTheNextWeek/aabb.h
+    src/common/perlin.h
+    src/common/rtw_stb_image.h
+    src/common/texture.h
     src/RTTheNextWeek/aarect.h
     src/RTTheNextWeek/box.h
     src/RTTheNextWeek/bvh.h
     src/RTTheNextWeek/constant_medium.h
-    src/RTTheNextWeek/hittable_list.h
     src/RTTheNextWeek/hittable.h
+    src/RTTheNextWeek/hittable_list.h
     src/RTTheNextWeek/material.h
     src/RTTheNextWeek/moving_sphere.h
-    src/RTTheNextWeek/perlin.h
-    src/RTTheNextWeek/rtw_stb_image.h
     src/RTTheNextWeek/sphere.h
-    src/RTTheNextWeek/texture.h
     src/RTTheNextWeek/main.cc
 )
 
