@@ -67,6 +67,7 @@ set ( SOURCE_REST_LIFE
 add_executable(RTInOneWeekend       ${SOURCE_ONE_WEEKEND})
 add_executable(RTTheNextWeek        ${SOURCE_NEXT_WEEK})
 add_executable(RTTheRestOfLife      ${SOURCE_REST_LIFE})
+add_executable(cos_cubed            src/RTTheRestOfLife/cos_cubed.cc   ${COMMON_ALL})
 add_executable(integrate_x_sq       src/RTTheRestOfLife/integrate_x_sq.cc   ${COMMON_ALL})
 add_executable(pi                   src/RTTheRestOfLife/pi.cc   ${COMMON_ALL})
 
