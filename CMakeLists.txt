@@ -67,5 +67,6 @@ set ( SOURCE_REST_LIFE
 add_executable(RTInOneWeekend       ${SOURCE_ONE_WEEKEND})
 add_executable(RTTheNextWeek        ${SOURCE_NEXT_WEEK})
 add_executable(RTTheRestOfLife      ${SOURCE_REST_LIFE})
+add_executable(pi                   src/RTTheRestOfLife/pi.cc   ${COMMON_ALL})
 
 include_directories(src/common)
