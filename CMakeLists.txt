@@ -44,8 +44,28 @@ set ( SOURCE_NEXT_WEEK
     src/RTTheNextWeek/main.cc
 )
 
+set ( SOURCE_REST_LIFE
+    ${COMMON_ALL}
+    src/common/aabb.h
+    src/common/external/stb_image.h
+    src/common/perlin.h
+    src/common/rtw_stb_image.h
+    src/common/texture.h
+    src/RTTheRestOfLife/aarect.h
+    src/RTTheRestOfLife/box.h
+    src/RTTheRestOfLife/bvh.h
+    src/RTTheRestOfLife/constant_medium.h
+    src/RTTheRestOfLife/hittable.h
+    src/RTTheRestOfLife/hittable_list.h
+    src/RTTheRestOfLife/material.h
+    src/RTTheRestOfLife/moving_sphere.h
+    src/RTTheRestOfLife/sphere.h
+    src/RTTheRestOfLife/main.cc
+)
+
 # Executables
 add_executable(RTInOneWeekend       ${SOURCE_ONE_WEEKEND})
 add_executable(RTTheNextWeek        ${SOURCE_NEXT_WEEK})
+add_executable(RTTheRestOfLife      ${SOURCE_REST_LIFE})
 
 include_directories(src/common)
