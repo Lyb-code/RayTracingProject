@@ -54,11 +54,11 @@ set ( SOURCE_REST_LIFE
     src/RTTheRestOfLife/aarect.h
     src/RTTheRestOfLife/box.h
     src/RTTheRestOfLife/bvh.h
-    src/RTTheRestOfLife/constant_medium.h
     src/RTTheRestOfLife/hittable.h
     src/RTTheRestOfLife/hittable_list.h
     src/RTTheRestOfLife/material.h
-    src/RTTheRestOfLife/moving_sphere.h
+    src/RTTheRestOfLife/onb.h
+    src/RTTheRestOfLife/pdf.h
     src/RTTheRestOfLife/sphere.h
     src/RTTheRestOfLife/main.cc
 )
