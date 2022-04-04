@@ -3,8 +3,19 @@
 
 #include "rtweekend.h"
 #include "texture.h"
+#include "onb.h"
 
 struct hit_record;
+inline vec3 random_cosine_direction() {
+    //pdf(directions) = cos(theta)/pi 
+    auto r1 = random_double();
+    auto r2 = random_double();
+    auto z = sqrt(1-r2);
+    auto phi = 2*pi*r1;
+    auto x = cos(phi)*sqrt(r2);
+    auto y = sin(phi)*sqrt(r2);
+    return vec3(x, y, z);
+}
 
 class material {
     public:
@@ -33,11 +44,13 @@ class lambertian : public material {
         virtual bool scatter(
             const ray& r_in, const hit_record& rec, color& alb, ray& scattered, double& pdf
         ) const override {
-            auto scatter_direction = random_in_hemisphere(rec.normal);
+            onb uvw;
+            uvw.build_from_w(rec.normal);
+            auto scatter_direction = uvw.local(random_cosine_direction());
 
             scattered = ray(rec.p, unit_vector(scatter_direction), r_in.time());
             alb = albedo->value(rec.u, rec.v, rec.p);
-            pdf = 0.5 / pi;
+            pdf = dot(uvw.w(), scattered.direction()) / pi;
             return true;
         }
 
