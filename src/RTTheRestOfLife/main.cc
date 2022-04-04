@@ -24,6 +24,22 @@ color ray_color(const ray& r, const hittable& world, const color& background, in
         color albedo;
 
         if (rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf)) {
+            auto on_light = point3(random_double(213, 343), 554, random_double(227, 332));
+            auto to_light = on_light - rec.p;
+            auto distance_squared = to_light.length_squared();
+            to_light = unit_vector(to_light);
+
+            if (dot(to_light, rec.normal) < 0)
+                return emitted;
+            
+            double light_area = (343-213) * (332-227);
+            auto light_cosine = to_light.y();//The normal of light plane is (0, -1, 0);
+            if (light_cosine < 0.000001)
+                return emitted;
+
+            pdf = distance_squared / (light_cosine*light_area);
+            scattered = ray(rec.p, to_light, r.time());
+
             return emitted 
                 + albedo * rec.mat_ptr->scattering_pdf(r, rec, scattered)
                          * ray_color(scattered, world, background, depth-1) / pdf;
@@ -70,7 +86,7 @@ int main() {
     const auto aspect_ratio = 1.0 / 1.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 100;
+    const int samples_per_pixel = 10;
     const int max_depth = 50;
 
     // world
