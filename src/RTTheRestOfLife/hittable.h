@@ -142,4 +142,25 @@ bool rotate_y::hit(const ray& r, double t_min, double t_max, hit_record& record)
     return true;
 }
 
+class flip_face : public hittable {
+    public:
+        flip_face(shared_ptr<hittable> p) : ptr(p) {}
+
+        virtual bool hit(
+            const ray& r, double t_min, double t_max, hit_record& record) const override {
+            if (!ptr->hit(r, t_min, t_max, record))
+                return false;
+            
+            record.front_face = !record.front_face;
+            return true;
+        }
+        virtual bool bounding_box(
+            double time0, double time1, aabb& output_box) const {
+            return ptr->bounding_box(time0, time1, output_box);
+        }
+
+    public:
+        shared_ptr<hittable> ptr;
+};
+
 #endif
