@@ -10,7 +10,10 @@
 #include "pdf.h"
 #include <iostream>
 
-color ray_color(const ray& r, const hittable& world, const color& background, int depth) {
+color ray_color(
+    const ray& r, const hittable& world, const color& background, 
+    shared_ptr<hittable>& lights, int depth
+) {
     hit_record rec;
     // If the ray bounce limit is exceeded, no more light is collected.
     if (depth <= 0) 
@@ -23,13 +26,13 @@ color ray_color(const ray& r, const hittable& world, const color& background, in
         color albedo;
 
         if (rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf_val)) {
-            cosine_pdf p(rec.normal);
-            scattered = ray(rec.p, p.generate(), r.time());
-            pdf_val = p.value(scattered.direction());
+            hittable_pdf light_pdf(rec.p, lights);
+            scattered = ray(rec.p, light_pdf.generate(), r.time());
+            pdf_val = light_pdf.value(scattered.direction());
 
             return emitted 
                 + albedo * rec.mat_ptr->scattering_pdf(r, rec, scattered)
-                         * ray_color(scattered, world, background, depth-1) / pdf_val;
+                         * ray_color(scattered, world, background, lights, depth-1) / pdf_val;
         } else {
             return emitted;
         }
@@ -73,11 +76,13 @@ int main() {
     const auto aspect_ratio = 1.0 / 1.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 100;
+    const int samples_per_pixel = 10;
     const int max_depth = 50;
 
     // world
     hittable_list world = cornell_box();
+    shared_ptr<hittable> lights = 
+        make_shared<xz_rect>(213, 343, 227, 332, 554, shared_ptr<material>());
     color background(0, 0, 0);
 
     // camera
@@ -101,7 +106,7 @@ int main() {
                 auto u = (i+random_double()) / (image_width-1);
                 auto v = (j+random_double()) / (image_height-1);
                 ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, background, max_depth);
+                pixel_color += ray_color(r, world, background, lights, max_depth);
             }
             write_color(std::cout, pixel_color, samples_per_pixel);
         }
