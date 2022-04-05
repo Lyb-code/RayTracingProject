@@ -12,7 +12,7 @@
 
 color ray_color(
     const ray& r, const hittable& world, const color& background, 
-    shared_ptr<hittable>& lights, int depth
+    shared_ptr<hittable> lights, int depth
 ) {
     hit_record rec;
     // If the ray bounce limit is exceeded, no more light is collected.
@@ -20,21 +20,23 @@ color ray_color(
         return color(0, 0, 0);
 
     if (world.hit(r, 0.001, infinity, rec)) {
-        ray scattered;
         color emitted = rec.mat_ptr->emitted(r, rec, rec.u, rec.v, rec.p);
-        double pdf_val;
-        color albedo;
+        scatter_record srec;
 
-        if (rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf_val)) {
+        if (rec.mat_ptr->scatter(r, rec, srec)) {
+            if (srec.is_specular) {//Implicit sampling
+                return srec.attenuation 
+                    * ray_color(srec.specular_ray, world, background, lights, depth-1);
+            }
+            //Explicit sampling
             //a mixture density of the cosine and light sampling
-            auto p0 = make_shared<cosine_pdf>(rec.normal);
-            auto p1 = make_shared<hittable_pdf>(rec.p, lights);
-            mixture_pdf mixed_pdf(p0, p1);
-            scattered = ray(rec.p, mixed_pdf.generate(), r.time());
-            pdf_val = mixed_pdf.value(scattered.direction());
+            auto light_pdf_ptr = make_shared<hittable_pdf>(rec.p, lights);
+            mixture_pdf mixed_pdf(srec.pdf_ptr, light_pdf_ptr);
+            ray scattered(rec.p, mixed_pdf.generate(), r.time());
+            auto pdf_val = mixed_pdf.value(scattered.direction());
 
             return emitted 
-                + albedo * rec.mat_ptr->scattering_pdf(r, rec, scattered)
+                + srec.attenuation * rec.mat_ptr->scattering_pdf(r, rec, scattered)
                          * ray_color(scattered, world, background, lights, depth-1) / pdf_val;
         } else {
             return emitted;
@@ -61,7 +63,8 @@ hittable_list cornell_box() {
     objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
     objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
 
-    shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(162, 330, 165), white);
+    shared_ptr<material> aluminum = make_shared<metal>(color(0.8, 0.85, 0.88), 0.0);
+    shared_ptr<hittable> box1 = make_shared<box>(point3(0, 0, 0), point3(162, 330, 165), aluminum);
     box1 = make_shared<rotate_y>(box1, 15);
     box1 = make_shared<translate>(box1, vec3(265, 0, 295));
     objects.add(box1);
@@ -79,7 +82,7 @@ int main() {
     const auto aspect_ratio = 1.0 / 1.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 1000;
+    const int samples_per_pixel = 100;
     const int max_depth = 50;
 
     // world
