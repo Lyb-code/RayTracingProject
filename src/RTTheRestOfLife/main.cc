@@ -26,9 +26,12 @@ color ray_color(
         color albedo;
 
         if (rec.mat_ptr->scatter(r, rec, albedo, scattered, pdf_val)) {
-            hittable_pdf light_pdf(rec.p, lights);
-            scattered = ray(rec.p, light_pdf.generate(), r.time());
-            pdf_val = light_pdf.value(scattered.direction());
+            //a mixture density of the cosine and light sampling
+            auto p0 = make_shared<cosine_pdf>(rec.normal);
+            auto p1 = make_shared<hittable_pdf>(rec.p, lights);
+            mixture_pdf mixed_pdf(p0, p1);
+            scattered = ray(rec.p, mixed_pdf.generate(), r.time());
+            pdf_val = mixed_pdf.value(scattered.direction());
 
             return emitted 
                 + albedo * rec.mat_ptr->scattering_pdf(r, rec, scattered)
@@ -76,7 +79,7 @@ int main() {
     const auto aspect_ratio = 1.0 / 1.0;
     const int image_width = 600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 10;
+    const int samples_per_pixel = 1000;
     const int max_depth = 50;
 
     // world
