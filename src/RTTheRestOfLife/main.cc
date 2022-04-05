@@ -84,9 +84,9 @@ int main() {
 
     // world
     hittable_list world = cornell_box();
-    shared_ptr<hittable> lights = 
-        // make_shared<xz_rect>(213, 343, 227, 332, 554, shared_ptr<material>());
-        make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>());
+    hittable_list lights;
+    lights.add(make_shared<xz_rect>(213, 343, 227, 332, 554, shared_ptr<material>()));
+    lights.add(make_shared<sphere>(point3(190, 90, 190), 90, shared_ptr<material>()));
     color background(0, 0, 0);
 
     // camera
