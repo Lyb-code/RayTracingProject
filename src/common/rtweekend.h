@@ -5,15 +5,19 @@
 #include <limits>
 #include <memory>
 #include <cstdlib>
+#include <thread>
+#include <vector>
 
 // usings
 using std::sqrt;
 using std::shared_ptr;
 using std::make_shared;
+using std::vector;
 
 // constants
 const double infinity = std::numeric_limits<double>::infinity();
 const double pi = 3.1415926535897932385;
+const int thread_num = 10;
 
 // untility functions
 inline double degrees_to_radians(double degrees) {

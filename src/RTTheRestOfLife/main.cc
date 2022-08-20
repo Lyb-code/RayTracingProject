@@ -81,6 +81,7 @@ int main() {
     const int image_height = static_cast<int>(image_width / aspect_ratio);
     const int samples_per_pixel = 1000;
     const int max_depth = 50;
+    vector<vector<color>> framebuffer(image_height, vector<color>(image_width, color(0, 0, 0)));
 
     // world
     hittable_list world = cornell_box();
@@ -102,20 +103,47 @@ int main() {
 
     // render
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
-    for (int j = image_height-1; j >= 0; j--) {
-        std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
-        for (int i = 0; i < image_width; i++) {
-            color pixel_color(0, 0, 0);
-            for (int k = 0; k < samples_per_pixel; k++) {
-                auto u = (i+random_double()) / (image_width-1);
-                auto v = (j+random_double()) / (image_height-1);
-                ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, background, lights, max_depth);
+    auto ParallelRender = [&](int threadIndex) {
+        for (int j = image_height-1-threadIndex; j >= 0; j -= thread_num) {
+            std::cerr << "\rScanlines remaining: " << j << " in thread: " << threadIndex << std::flush;
+            for (int i = 0; i < image_width; i++) {
+                color pixel_color(0, 0, 0);
+                for (int k = 0; k < samples_per_pixel; k++) {
+                    auto u = (i+random_double()) / (image_width-1);
+                    auto v = (j+random_double()) / (image_height-1);
+                    ray r = cam.get_ray(u, v);
+                    pixel_color += ray_color(r, world, background, lights, max_depth);
+                }
+                framebuffer[image_height-1-j][i] = pixel_color;
             }
-            write_color(std::cout, pixel_color, samples_per_pixel);
         }
-
+    };
+    
+    vector<std::thread> render_threads;
+    for (int i = 0; i < thread_num; i++)
+    {
+        render_threads.push_back(std::thread(ParallelRender, i));
     }
+    for (auto &render_thread : render_threads)
+    {
+        render_thread.join();
+    }
+
+    framebuffer_to_picture(std::cout, framebuffer, image_width, image_height, samples_per_pixel);
+    // for (int j = image_height-1; j >= 0; j--) {
+    //     std::cerr << "\rScanlines remaining: " << j << ' ' << std::flush;
+    //     for (int i = 0; i < image_width; i++) {
+    //         color pixel_color(0, 0, 0);
+    //         for (int k = 0; k < samples_per_pixel; k++) {
+    //             auto u = (i+random_double()) / (image_width-1);
+    //             auto v = (j+random_double()) / (image_height-1);
+    //             ray r = cam.get_ray(u, v);
+    //             pixel_color += ray_color(r, world, background, lights, max_depth);
+    //         }
+    //         write_color(std::cout, pixel_color, samples_per_pixel);
+    //     }
+
+    // }
     std :: cerr << "\nDone.\n";
 
 }
